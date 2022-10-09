@@ -2,9 +2,9 @@ import java.util.*;
 
 public class Flipzon {
 
-    private ArrayList<RegisteredUser> users = new ArrayList<RegisteredUser>();
-    public ArrayList<Category> categories = new ArrayList<Category>();
-    public ArrayList<Deal> deals = new ArrayList<Deal>();
+    ArrayList<RegisteredUser> users = new ArrayList<RegisteredUser>();
+    public HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
+    public HashMap<Integer, Deal> deals = new HashMap<Integer, Deal>();
 
     public boolean authorizeCustomer(String username, String password){
         for (RegisteredUser user : users) {
@@ -34,12 +34,13 @@ public class Flipzon {
         System.out.print("Please enter the password: ");
         String password = sc.nextLine();
         NormalUser newUser = new NormalUser(username, password);
+        this.users.add(newUser);
     }
 
     public Product getProduct(int categoryId, int productId){
         return categories.get(categoryId).getProduct(productId);
     }
     public Deal getDeal(int dealId){
-        return deals.get(0);
+        return deals.get(dealId);
     }
 }

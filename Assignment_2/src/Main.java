@@ -43,7 +43,6 @@ class Menu {
         if(admin.authorize(username, password)) this.adminMenu();
         else{
             System.out.println("Invalid username or password");
-            return;
         }
     }
     private void adminMenu(){
@@ -58,12 +57,12 @@ class Menu {
         menuArgs.add("Back");
         int choice = makeMenu(menuArgs);
         switch (choice){
-            case 1 -> admin.addCategory();
-            case 2 -> admin.removeCategory();
-            case 3 -> admin.addProduct();
-            case 4 -> admin.removeProduct();
-            case 5 -> admin.setProductDiscount();
-            case 6 -> admin.addDeal();
+            case 1 -> admin.addCategory(flipzon, sc);
+            case 2 -> admin.removeCategory(flipzon, sc);
+            case 3 -> admin.addProduct(flipzon, sc);
+            case 4 -> admin.removeProduct(flipzon, sc);
+            case 5 -> admin.setProductDiscount(flipzon, sc);
+            case 6 -> admin.addDeal(flipzon, sc);
             case 7 -> {return;}
         }
         this.adminMenu();
@@ -84,7 +83,7 @@ class Menu {
         this.customerMainMenu();
     }
     private void loginCustomer(){
-        System.out.println("Dear Admin,\nPlease enter your username and password.");
+        System.out.println("Please enter your username and password.");
         System.out.print("Enter the username: ");
         String username = sc.nextLine();
         System.out.print("Enter the password: ");
@@ -94,7 +93,6 @@ class Menu {
             this.customerMenu(customer);
         }else{
             System.out.println("Invalid username or password");
-            return;
         }
     }
     private void customerMenu(RegisteredUser customer){
@@ -125,7 +123,8 @@ class Menu {
                 System.out.print("Enter the product quantity: ");
                 int quantity = sc.nextInt();
                 sc.nextLine();
-                customer.addToCart(product, quantity);
+                if(product.checkAvailability(quantity)) customer.addToCart(product, quantity);
+                else System.out.println("Insufficient stock, please reduce quantity or check back later.");
             }
             case 4 -> {
                 System.out.print("Enter the Deal ID: ");
@@ -135,17 +134,21 @@ class Menu {
                 System.out.print("Enter the product quantity: ");
                 int quantity = sc.nextInt();
                 sc.nextLine();
-                customer.addToCart(deal, quantity);
+                if(deal.checkAvailability(quantity)) customer.addToCart(deal, quantity);
+                else System.out.println("Insufficient stock, please reduce quantity or check back later.");
             }
             case 5 -> customer.displayCoupons();
             case 6 -> customer.displayBalance();
             case 7 -> customer.displayCart();
             case 8 -> customer.emptyCart();
-            case 9 -> customer.checkoutCart();
+            case 9 -> customer.checkoutCart(flipzon);
             case 10 -> {
                 System.out.print("Enter the new status: ");
                 String status = sc.nextLine();
-                customer.upgradeStatus(status);
+                if(customer.upgradeStatus(status, flipzon)){
+                    System.out.println("Please login again to your account.");
+                    return;
+                }
             }
             case 11 -> customer.updateBalance(sc);
             case 12 -> {return;}
