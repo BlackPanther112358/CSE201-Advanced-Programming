@@ -1,20 +1,20 @@
 Length of array: 1 Number of threads: 1
-Time taken: 0.0025 ms
+Time taken: 0.0028 ms
 Length of array: 1 Number of threads: 2
-Time taken: 0.0022 ms
+Time taken: 0.0024 ms
 Length of array: 10 Number of threads: 1
-Time taken: 0.1588 ms
+Time taken: 0.1334 ms
 Length of array: 10 Number of threads: 2
-Time taken: 0.0744 ms
+Time taken: 0.055 ms
 Length of array: 100 Number of threads: 1
-Time taken: 2.1095 ms
+Time taken: 1.9614 ms
 Length of array: 100 Number of threads: 2
-Time taken: 0.3225 ms
+Time taken: 0.3453 ms
 Length of array: 1000 Number of threads: 1
-Time taken: 13.174 ms
+Time taken: 15.4482 ms
 Length of array: 1000 Number of threads: 2
-Time taken: 5.7159 ms
+Time taken: 5.8605 ms
 Length of array: 10000 Number of threads: 1
-Time taken: 819.8148 ms
+Time taken: 836.7427 ms
 Length of array: 10000 Number of threads: 2
-Time taken: 408.9147 ms
+Time taken: 333.4568 ms

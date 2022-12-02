@@ -99,30 +99,34 @@ class Simulate{
         this.tree = new Tree<Integer>(this.length);
 
         if(this.thread_cnt == 1){
-            treeCreation<Integer> t1 = new treeCreation<Integer>(this.tree, 0, this.array);
+            treeCreation<Integer> t1 = new treeCreation<Integer>(0, this.array);
             Thread th1 = new Thread(t1);
             th1.start();
             th1.join();
-            this.treeCreationTime = t1.getRunTime();
+            this.tree.setRoot(t1.getRoot());
+            this.tree.setDepth(t1.getDepth());
+            this.treeCreationTime = t1.getEndTime() - t1.getStartTime();
         }else if(this.thread_cnt == 2){
-            tree.setEle(0, this.array[0]);
-            treeCreation<Integer> t1 = new treeCreation<Integer>(this.tree, 1, this.array);
-            treeCreation<Integer> t2 = new treeCreation<Integer>(this.tree, 2, this.array);
+            treeCreation<Integer> t1 = new treeCreation<Integer>(1, this.array);
+            treeCreation<Integer> t2 = new treeCreation<Integer>(2, this.array);
             Thread th1 = new Thread(t1);
             Thread th2 = new Thread(t2);
             th1.start();
             th2.start();
             th1.join();
             th2.join();
-            this.treeCreationTime = Math.max(t1.getRunTime(), t2.getRunTime());
+            treeNode<Integer> root = new treeNode<Integer>(this.array[0]);
+            root.setLeft(t1.getRoot());
+            root.setRight(t2.getRoot());
+            this.tree.setRoot(root);
+            this.tree.setDepth(Math.max(t1.getDepth(), t2.getDepth()) + 1);
+//            this.treeCreationTime = Math.max(t1.getRunTime(), t2.getRunTime());
+            this.treeCreationTime = Math.max(t1.getEndTime(), t2.getEndTime()) - Math.min(t1.getStartTime(), t2.getStartTime());
         }else{
-            tree.setEle(0, this.array[0]);
-            tree.setEle(1, this.array[1]);
-            tree.setEle(2, this.array[2]);
-            treeCreation<Integer> t1 = new treeCreation<Integer>(this.tree, 3, this.array);
-            treeCreation<Integer> t2 = new treeCreation<Integer>(this.tree, 4, this.array);
-            treeCreation<Integer> t3 = new treeCreation<Integer>(this.tree, 5, this.array);
-            treeCreation<Integer> t4 = new treeCreation<Integer>(this.tree, 6, this.array);
+            treeCreation<Integer> t1 = new treeCreation<Integer>(3, this.array);
+            treeCreation<Integer> t2 = new treeCreation<Integer>(4, this.array);
+            treeCreation<Integer> t3 = new treeCreation<Integer>(5, this.array);
+            treeCreation<Integer> t4 = new treeCreation<Integer>(6, this.array);
             Thread th1 = new Thread(t1);
             Thread th2 = new Thread(t2);
             Thread th3 = new Thread(t3);
@@ -135,7 +139,19 @@ class Simulate{
             th2.join();
             th3.join();
             th4.join();
-            this.treeCreationTime = Math.max(Math.max(t1.getRunTime(), t2.getRunTime()), Math.max(t3.getRunTime(), t4.getRunTime()));
+            treeNode<Integer> root = new treeNode<Integer>(this.array[0]);
+            treeNode<Integer> left = new treeNode<Integer>(this.array[1]);
+            treeNode<Integer> right = new treeNode<Integer>(this.array[2]);
+            root.setLeft(left);
+            root.setRight(right);
+            left.setLeft(t1.getRoot());
+            left.setRight(t2.getRoot());
+            right.setLeft(t3.getRoot());
+            right.setRight(t4.getRoot());
+            this.tree.setRoot(root);
+            this.tree.setDepth(Math.max(Math.max(t1.getDepth(), t2.getDepth()), Math.max(t3.getDepth(), t4.getDepth())) + 2);
+//            this.treeCreationTime = Math.max(Math.max(t1.getRunTime(), t2.getRunTime()), Math.max(t3.getRunTime(), t4.getRunTime()));
+            this.treeCreationTime = Math.max(Math.max(t1.getEndTime(), t2.getEndTime()), Math.max(t3.getEndTime(), t4.getEndTime())) - Math.min(Math.min(t1.getStartTime(), t2.getStartTime()), Math.min(t3.getStartTime(), t4.getStartTime()));
         }
 
         this.treeHeight = this.tree.getDepth();
@@ -145,33 +161,33 @@ class Simulate{
     private void searchTree() throws InterruptedException {
 
         if(this.thread_cnt == 1){
-            treeSearch<Integer> t1 = new treeSearch<Integer>(this.tree, 0, this.searchElement);
+            treeSearch<Integer> t1 = new treeSearch<Integer>(this.tree.getRoot(), this.searchElement);
             Thread th1 = new Thread(t1);
             th1.start();
             th1.join();
-            this.treeSearchTime = t1.getRunTime();
+            this.treeSearchTime = t1.getEndTime() - t1.getStartTime();
         }else if(this.thread_cnt == 2){
-            if(this.tree.getEle(0) == this.searchElement){
+            if(this.tree.getRoot().getEle() == this.searchElement){
                 this.treeSearchTime = 0;
             }else {
-                treeSearch<Integer> t1 = new treeSearch<Integer>(this.tree, 1, this.searchElement);
-                treeSearch<Integer> t2 = new treeSearch<Integer>(this.tree, 2, this.searchElement);
+                treeSearch<Integer> t1 = new treeSearch<Integer>(this.tree.getRoot().getLeft(), this.searchElement);
+                treeSearch<Integer> t2 = new treeSearch<Integer>(this.tree.getRoot().getRight(), this.searchElement);
                 Thread th1 = new Thread(t1);
                 Thread th2 = new Thread(t2);
                 th1.start();
                 th2.start();
                 th1.join();
                 th2.join();
-                this.treeSearchTime = Math.min(t1.getRunTime(), t2.getRunTime());
+                this.treeSearchTime = Math.max(t1.getEndTime(), t2.getEndTime()) - Math.min(t1.getStartTime(), t2.getStartTime());
             }
         }else{
-            if((this.tree.getEle(0) == this.searchElement) || (this.tree.getEle(1) == this.searchElement) || (this.tree.getEle(2) == this.searchElement)){
+            if((this.tree.getRoot().getEle() == this.searchElement) || (this.tree.getRoot().getLeft().getEle() == this.searchElement) || (this.tree.getRoot().getRight().getEle() == this.searchElement)){
                 this.treeSearchTime = 0;
             }else {
-                treeSearch<Integer> t1 = new treeSearch<Integer>(this.tree, 3, this.searchElement);
-                treeSearch<Integer> t2 = new treeSearch<Integer>(this.tree, 4, this.searchElement);
-                treeSearch<Integer> t3 = new treeSearch<Integer>(this.tree, 5, this.searchElement);
-                treeSearch<Integer> t4 = new treeSearch<Integer>(this.tree, 6, this.searchElement);
+                treeSearch<Integer> t1 = new treeSearch<Integer>(this.tree.getRoot().getLeft().getLeft(), this.searchElement);
+                treeSearch<Integer> t2 = new treeSearch<Integer>(this.tree.getRoot().getLeft().getRight(), this.searchElement);
+                treeSearch<Integer> t3 = new treeSearch<Integer>(this.tree.getRoot().getRight().getLeft(), this.searchElement);
+                treeSearch<Integer> t4 = new treeSearch<Integer>(this.tree.getRoot().getRight().getRight(), this.searchElement);
                 Thread th1 = new Thread(t1);
                 Thread th2 = new Thread(t2);
                 Thread th3 = new Thread(t3);
@@ -184,10 +200,45 @@ class Simulate{
                 th2.join();
                 th3.join();
                 th4.join();
-                this.treeSearchTime = Math.min(Math.min(t1.getRunTime(), t2.getRunTime()), Math.min(t3.getRunTime(), t4.getRunTime()));
+//                this.treeSearchTime = Math.min(Math.min(t1.getRunTime(), t2.getRunTime()), Math.min(t3.getRunTime(), t4.getRunTime()));
+                this.treeSearchTime = Math.max(Math.max(t1.getEndTime(), t2.getEndTime()), Math.max(t3.getEndTime(), t4.getEndTime())) - Math.min(Math.min(t1.getStartTime(), t2.getStartTime()), Math.min(t3.getStartTime(), t4.getStartTime()));
             }
         }
 
+    }
+
+}
+
+class treeNode<T>{
+
+    private final T ele;
+    private treeNode<T> left;
+    private treeNode<T> right;
+
+    public treeNode(T ele){
+        this.ele = ele;
+        this.left = null;
+        this.right = null;
+    }
+
+    public void setLeft(treeNode<T> left){
+        this.left = left;
+    }
+
+    public void setRight(treeNode<T> right){
+        this.right = right;
+    }
+
+    public T getEle(){
+        return this.ele;
+    }
+
+    public treeNode<T> getLeft(){
+        return this.left;
+    }
+
+    public treeNode<T> getRight(){
+        return this.right;
     }
 
 }
@@ -196,11 +247,11 @@ class Tree<T>{
 
     private final int size;
     private int depth;
-    private T[] ele;
+    private treeNode<T> root;
 
     public Tree(int size){
         this.size = size;
-        this.ele = (T[]) new Object[size];
+        this.root = null;
         this.depth = 1;
     }
 
@@ -209,20 +260,19 @@ class Tree<T>{
     }
 
     public int getDepth(){
-        this.calculateDepth();
         return this.depth;
     }
 
-    public T getEle(int index){
-        return this.ele[index];
+    public void setDepth(int depth){
+        this.depth = depth;
     }
 
-    public void setEle(int index, T ele){
-        this.ele[index] = ele;
+    public treeNode<T> getRoot(){
+        return this.root;
     }
 
-    private void calculateDepth(){
-        while (this.size > (1<<this.depth)) { this.depth++; }
+    public void setRoot(treeNode<T> root){
+        this.root = root;
     }
 
 }
@@ -230,13 +280,13 @@ class Tree<T>{
 class treeCreation<T> implements Runnable{
 
     private final int init_idx;
-    private final Tree<T> tree;
     private final T[] array;
     private long startTime;
     private long endTime;
+    private treeNode<T> root;
+    private int depth;
 
-    public treeCreation(Tree<T> tree, int init_idx, T[] array){
-        this.tree = tree;
+    public treeCreation(int init_idx, T[] array){
         this.init_idx = init_idx;
         this.array = array;
     }
@@ -244,52 +294,73 @@ class treeCreation<T> implements Runnable{
     @Override
     public void run() {
         this.startTime = System.nanoTime();
-        this.createTree(init_idx);
+        this.root = this.createTree(init_idx);
+        this.depth = this.calculateDepth(this.root);
         this.endTime = System.nanoTime();
     }
 
-    private void createTree(int idx){
-        if(idx >= this.tree.getSize()) return;
-        this.tree.setEle(idx, this.array[idx]);
-        createTree(2*idx + 1);
-        createTree(2*idx + 2);
+    private treeNode<T> createTree(int idx){
+        if(idx >= this.array.length) return null;
+        treeNode<T> node = new treeNode<T>(this.array[idx]);
+        node.setLeft(createTree(2*idx + 1));
+        node.setRight(createTree(2*idx + 2));
+        return node;
+    }
+
+    private int calculateDepth(treeNode<T> node){
+        if(node == null) return 0;
+        return 1 + Math.max(calculateDepth(node.getLeft()), calculateDepth(node.getRight()));
     }
 
     public long getRunTime(){
         return this.endTime - this.startTime;
     }
 
+    public long getStartTime(){
+        return this.startTime;
+    }
+
+    public long getEndTime(){
+        return this.endTime;
+    }
+
+    public int getDepth(){
+        return this.depth;
+    }
+
+    public treeNode<T> getRoot(){
+        return this.root;
+    }
+
 }
 
 class treeSearch<T> implements Runnable{
 
-    private final int init_idx;
-    private final Tree<T> tree;
+    private final treeNode<T> root;
     private final T searchElement;
     private long startTime = 0;
     private long endTime = 0;
     private boolean found = false;
 
-    public treeSearch(Tree<T> tree, int init_idx, T searchElement){
-        this.tree = tree;
-        this.init_idx = init_idx;
+    public treeSearch(treeNode<T> root, T searchElement){
+        this.root = root;
         this.searchElement = searchElement;
     }
 
     @Override
     public void run() {
         this.startTime = System.nanoTime();
-        if(!this.searchTree(init_idx)) this.endTime = System.nanoTime();
+        if(!this.searchTree(this.root)) this.endTime = System.nanoTime();
     }
 
-    private boolean searchTree(int idx){
-        if(idx >= this.tree.getSize()) return Boolean.FALSE;
-        if(this.tree.getEle(idx) == this.searchElement){
+    private boolean searchTree(treeNode<T> node){
+        if(node == null) return Boolean.FALSE;
+        if(node.getEle() == this.searchElement){
             this.elementFound();
             return Boolean.TRUE;
         }
-        if(searchTree(2*idx + 1)) return Boolean.TRUE;
-        if(searchTree(2*idx + 2)) return Boolean.TRUE;
+        if(searchTree(node.getLeft())) return Boolean.TRUE;
+        if(searchTree(node.getRight())) return Boolean.TRUE;
         return Boolean.FALSE;
     }
 
@@ -300,6 +371,14 @@ class treeSearch<T> implements Runnable{
 
     public long getRunTime(){
         return this.endTime - this.startTime;
+    }
+
+    public long getStartTime(){
+        return this.startTime;
+    }
+
+    public long getEndTime(){
+        return this.endTime;
     }
 
     public boolean wasFound(){

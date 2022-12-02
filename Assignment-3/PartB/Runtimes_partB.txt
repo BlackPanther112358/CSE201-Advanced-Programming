@@ -1,45 +1,45 @@
 Length of array: 10 Number of threads: 1
-Time taken: 0.0209 ms
+Time taken: 1.1588 ms
 Tree height: 4
 Time to search for an element: 0.0755 ms
 
 Length of array: 10 Number of threads: 2
-Time taken: 0.0129 ms
+Time taken: 0.0465 ms
 Tree height: 4
-Time to search for an element: 0.0059 ms
+Time to search for an element: 0.0667 ms
 
 Length of array: 10 Number of threads: 4
-Time taken: 0.0057 ms
+Time taken: 0.3189 ms
 Tree height: 4
-Time to search for an element: 0.0026 ms
+Time to search for an element: 0.0 ms
 
 Length of array: 1000 Number of threads: 1
-Time taken: 0.4354 ms
+Time taken: 0.6044 ms
 Tree height: 10
-Time to search for an element: 0.6013 ms
+Time to search for an element: 0.3632 ms
 
 Length of array: 1000 Number of threads: 2
-Time taken: 0.029 ms
+Time taken: 0.0872 ms
 Tree height: 10
-Time to search for an element: 0.0847 ms
+Time to search for an element: 0.1726 ms
 
 Length of array: 1000 Number of threads: 4
-Time taken: 0.0516 ms
+Time taken: 0.2652 ms
 Tree height: 10
-Time to search for an element: 0.0084 ms
+Time to search for an element: 0.2773 ms
 
 Length of array: 1000000 Number of threads: 1
-Time taken: 16.1221 ms
+Time taken: 46.6956 ms
 Tree height: 20
-Time to search for an element: 7.4125 ms
+Time to search for an element: 6.6656 ms
 
 Length of array: 1000000 Number of threads: 2
-Time taken: 7.4565 ms
+Time taken: 63.7277 ms
 Tree height: 20
-Time to search for an element: 2.8266 ms
+Time to search for an element: 2.3572 ms
 
 Length of array: 1000000 Number of threads: 4
-Time taken: 7.2823 ms
+Time taken: 38.4176 ms
 Tree height: 20
-Time to search for an element: 1.7074 ms
+Time to search for an element: 1.8836 ms
 
